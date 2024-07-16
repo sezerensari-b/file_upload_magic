@@ -2,25 +2,37 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import redirect
-from .models import MyFile
+from .models import Company
+from django.core.exceptions import ValidationError
 
 
-def upload_file(request):
+def create_company(request):
     if request.method == 'POST':
-        uploaded_file = request.FILES['file']
+        company_data = {}
+        for field in Company._meta.fields:
+            field_name = field.name
+            if field_name in request.POST:
+                company_data[field_name] = request.POST[field_name]
+            elif field_name in request.FILES:
+                company_data[field_name] = request.FILES[field_name]
 
-        valid_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.mp3', '.mp4', '.wav']
-        ext = uploaded_file.name.split('.')[-1].lower()
+        company_data['active'] = company_data.get('active') == 'on'
 
-        if f'.{ext}' not in valid_extensions:
-            return render(request, 'general/upload.html', {'error': 'Invalid file type.'})
+        company = Company(**company_data)
 
-        my_file = MyFile(file=uploaded_file)
-        my_file.save()
-        return redirect('success')
+        try:
+            company.full_clean()
+            company.save()
+            return redirect('list_company')
+        except ValidationError as e:
+            errors = {field: messages for field, messages in e.message_dict.items()}
+            return render(request, 'general/create_company.html', {'company': company, 'errors': errors})
 
-    return render(request, 'general/upload.html')
+    return render(request, 'general/create_company.html')
 
 
-def succes(request):
-    return render(request, 'general/succes.html')
+def list_company(request):
+    companies = Company.objects.all()  # Retrieve all Company instances
+    for company in companies:
+        print(company.logo.url)
+    return render(request, 'general/list_company.html', {'companies': companies})

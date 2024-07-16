@@ -1,0 +1,110 @@
+{% extends 'general/base.html' %}
+{% load static %}
+
+{% block title %}Create Company{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Create New Company</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name" class="form-label">Company Name</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+            {% if 'name' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.name.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="founded_date" class="form-label">Founded Date</label>
+            <input type="date" id="founded_date" name="founded_date" class="form-control" required>
+            {% if 'founded_date' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.founded_date.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4"></textarea>
+            {% if 'description' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.description.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" id="address" name="address" class="form-control" required>
+            {% if 'address' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.address.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number</label>
+            <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+            {% if 'phone_number' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.phone_number.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+            {% if 'email' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.email.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="website" class="form-label">Website</label>
+            <input type="url" id="website" name="website" class="form-control">
+            {% if 'website' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.website.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" id="active" name="active" class="form-check-input">
+            <label for="active" class="form-check-label">Active</label>
+            {% if 'active' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.active.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="sector" class="form-label">Sector</label>
+            <select id="sector" name="sector" class="form-select" required>
+                <option value="">Select a sector</option>
+                <option value="tech">Technology</option>
+                <option value="finance">Finance</option>
+                <option value="health">Health</option>
+                <option value="education">Education</option>
+            </select>
+            {% if 'sector' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.sector.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="logo" class="form-label">Logo</label>
+            <input type="file" id="logo" accept="image/*" name="logo" class="form-control" required>
+            {% if 'logo' in errors %}
+            <div class="alert alert-danger mt-2 p-2">{{ errors.logo.0 }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+{% endblock %}
+{% block scripts%}
+{{ block.super }}
+<script src="{% static 'general/js/script.js' %}"></script> 
+{% endblock %}
+
+
+
