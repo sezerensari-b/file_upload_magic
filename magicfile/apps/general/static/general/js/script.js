@@ -1,33 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const fileInput = document.querySelector("#logo")
-
-    fileInput.addEventListener('input', () => {
-        let fileLogo =  $('#file_logo').val();
-        if(fileLogo) {
-            $.ajax({
-                url: '/logo-delete/',
-                type: 'POST',
-                data: {
-                    'file_logo': $('#file_logo').val(),
-                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#file_logo').val('');
-                        $('#upload-result').html('<div class="alert alert-danger">Logo deleted successfully!</div>');
-                        $('#upload-logo').text('Upload Logo').removeClass('btn-danger').addClass('btn-secondary');
-                        $('#company-form button[type="submit"]').prop('disabled', true);
-                    } else {
-                        $('#upload-result').html('<div class="alert alert-danger">Error deleting logo.</div>');
-                    }
-                },
-                error: function(xhr) {
-                    $('#upload-result').html('<div class="alert alert-warning">Error deleting logo.</div>');
-                    $('#company-form button[type="submit"]').prop('disabled', true);
-                }
-            });
-        }
-    })
+    const fileInput = document.querySelector("#logo");
+    let currentRequest = null;
 
     fileInput.addEventListener('change', function () {
         const allowedExtensions = [
@@ -43,17 +16,44 @@ document.addEventListener("DOMContentLoaded", () => {
             alert('Invalid file type. Please upload a valid file.');
             fileInput.value = ''; 
         }
+
+        if(currentRequest){
+            currentRequest.abort();
+            $('#upload-result').html('<div class="alert alert-danger">Logo upload interrupted. Please try again.</div>');
+            setLoading('error')
+        }
+
+        let fileLogo =  $('#file_logo').val();
+        if(fileLogo) {
+            fileToDelete = $('#file_logo').val()
+            deleteLogoFromView();
+
+            $.ajax({
+                url: '/logo-delete/',
+                type: 'POST',
+                data: {
+                    'file_logo': fileToDelete,
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                error: function(xhr) {
+                    console.log("delete error")
+                }
+            });
+        }
+        
     });
 
     $('#upload-logo').click(function() {
         var logoFile = $('#logo')[0].files[0];
-        let fileLogo =  $('#file_logo').val();
-    
+        let fileLogo = $('#file_logo').val();
+
         if (!fileLogo) {
             var formData = new FormData();
             formData.append('logo', logoFile);
-    
-            $.ajax({
+
+            setLoading('start', 'upload')
+
+            currentRequest = $.ajax({
                 url: '/logo-upload/',
                 type: 'POST',
                 data: formData,
@@ -61,37 +61,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 processData: false,
                 success: function(response) {
                     $('#file_logo').val(response.file_logo);
-                    $('#upload-result').html('<div class="alert alert-success">Logo uploaded successfully!</div>');
-                    $('#upload-logo').text('Delete Logo').removeClass('btn-secondary').addClass('btn-danger');
-                    $('#company-form button[type="submit"]').prop('disabled', false);
+                    setLoading('complete')
                 },
                 error: function(xhr) {
-                    $('#upload-result').html('<div class="alert alert-danger">Error uploading logo.</div>');
-                    $('#company-form button[type="submit"]').prop('disabled', true);
+                    setLoading('error')
                 }
             });
         } else {
-            $.ajax({
+            fileToDelete = $('#file_logo').val()
+            $('#logo').val('');
+            deleteLogoFromView()
+           $.ajax({
                 url: '/logo-delete/',
                 type: 'POST',
                 data: {
-                    'file_logo': $('#file_logo').val(),
+                    'file_logo': fileToDelete,
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
                 },
-                success: function(response) {
-                    if (response.success) {
-                        $('#file_logo').val('');
-                        $('#logo').val('');
-                        $('#upload-result').html('<div class="alert alert-danger">Logo deleted successfully!</div>');
-                        $('#upload-logo').text('Upload Logo').removeClass('btn-danger').addClass('btn-secondary');
-                        $('#company-form button[type="submit"]').prop('disabled', true);
-                    } else {
-                        $('#upload-result').html('<div class="alert alert-danger">Error deleting logo.</div>');
-                    }
-                },
                 error: function(xhr) {
-                    $('#upload-result').html('<div class="alert alert-warning">Error deleting logo.</div>');
-                    $('#company-form button[type="submit"]').prop('disabled', true);
+                    console.log("delete error")
                 }
             });
         }
@@ -104,4 +92,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+
+    function setLoading(activater){
+        if (activater == 'start'){
+            $('#upload-logo .spinner-border').removeClass('d-none');
+            $('#upload-logo .button-text').text('Uploading...');
+            $('#upload-logo').attr('disabled', true);
+        }
+        else if(activater == 'complete'){
+            $('#upload-result').html('<div class="alert alert-success">Logo uploaded successfully!</div>');
+            $('#upload-logo .spinner-border').addClass('d-none');
+            $('#upload-logo').attr('disabled', false);
+            currentRequest = null;
+            $('#upload-logo .button-text').text('Delete Logo');
+            $('#upload-logo').removeClass('btn-secondary').addClass('btn-danger');
+        }
+        else if (activater == 'error'){
+            $('#upload-logo .spinner-border').addClass('d-none');
+            $('#upload-logo').attr('disabled', false);
+            currentRequest = null;
+            $('#upload-logo .button-text').text('Upload Logo');
+        }
+    }
+
+    function deleteLogoFromView(){
+        $('#file_logo').val('');
+        $('#upload-logo').removeClass('btn-danger').addClass('btn-secondary');
+        $('#upload-logo .button-text').text('Upload Logo');
+        $('#upload-result').html('');
+        $('#company-form button[type="submit"]').prop('disabled', true);
+    }
 });
