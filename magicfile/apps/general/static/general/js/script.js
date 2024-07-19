@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const allowedExtensions = [
             '.jpg', 
             '.jpeg', 
-            '.png'
+            '.png',
+            '.avi'
         ];
         const filePath = fileInput.value;
         const extension = filePath.split('.').pop().toLowerCase();
@@ -103,5 +104,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    
-})
+});

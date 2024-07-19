@@ -4,38 +4,40 @@
 {% block content %}
 <div class="container mt-5">
     <h2>List Company</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Logo</th>
-                <th>Founded Date</th>
-                <th>Description</th>
-                <th>Address</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-                <th>Website</th>
-                <th>Active</th>
-                <th>Sector</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for company in companies %}
-            <tr>
-                <td>{{ company.name }}</td>
-                <td><img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" width="50"></td>
-                <td>{{ company.founded_date }}</td>
-                <td>{{ company.description }}</td>
-                <td>{{ company.address }}</td>
-                <td>{{ company.phone_number }}</td>
-                <td>{{ company.email }}</td>
-                <td>{{ company.website }}</td>
-                <td>{{ company.active }}</td>
-                <td>{{ company.get_sector_display }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Logo</th>
+                    <th>Founded Date</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Website</th>
+                    <th>Active</th>
+                    <th>Sector</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in companies %}
+                <tr>
+                    <td>{{ company.name }}</td>
+                    <td><img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" width="50"></td>
+                    <td>{{ company.founded_date }}</td>
+                    <td>{{ company.description }}</td>
+                    <td>{{ company.address }}</td>
+                    <td>{{ company.phone_number }}</td>
+                    <td>{{ company.email }}</td>
+                    <td>{{ company.website }}</td>
+                    <td>{{ company.active }}</td>
+                    <td>{{ company.get_sector_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 {% block scripts %}

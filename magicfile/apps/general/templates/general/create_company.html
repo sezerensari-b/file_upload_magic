@@ -90,7 +90,7 @@
 
         <div class="mb-3">
             <label for="logo" class="form-label">Logo</label>
-            <input type="file" id="logo" accept="image/*" name="logo" class="form-control" required>
+            <input type="file" id="logo" accept="image/*, video/*" name="logo" class="form-control" required>
             <input type="hidden" id="file_logo" name="file_logo">
             {% if 'logo' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.logo.0 }}</div>

@@ -13,8 +13,14 @@
         <h1>Company Management</h1>
         <nav class="">
             <ul class="nav gap-3 justify-content-center">
+                {% if request.user.is_authenticated %}
                 <li class="nav-item"><a class="nav-link text-white bg-secondary" href="{% url 'list_company' %}">Company List</a></li>
                 <li class="nav-item"><a class="nav-link text-white bg-secondary" href="{% url 'create_company' %}">Company Create</a></li>
+                <li class="nav-item"><a class="nav-link text-white bg-secondary" href="{% url 'logout' %}">Logout</a></li>
+                {% else  %}
+                <li class="nav-item"><a class="nav-link text-white bg-secondary" href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+
             </ul>
         </nav>
     </header>
