@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import create_company, list_company, upload_logo, delete_logo, index, login, logout
+from .views import create_company, list_company, upload_logo, delete_logo, index, login, logout, edit_temp_company
 
 urlpatterns = [
     path('company-create/', create_company, name='create_company'),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('', index, name='index'),
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
+    path('temp-company-edit/', edit_temp_company, name='create_temp_company'),
 ]

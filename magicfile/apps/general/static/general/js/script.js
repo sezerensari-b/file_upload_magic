@@ -2,6 +2,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.querySelector("#logo");
     let currentRequest = null;
 
+    function initForm (){
+        let fileLogoVal = $('#file_logo').val()
+        if(fileLogoVal != ''){
+            $(fileInput).hide();
+            $('#upload-logo .button-text').text('Delete Logo');
+            $('#upload-logo').removeClass('btn-secondary').addClass('btn-danger');
+            $('#logo-filename').text(fileLogoVal.split('/').pop());
+            $('#company-form button[type="submit"]').prop('disabled', false);
+        } else {
+            $(fileInput).show();
+            $('#upload-logo .button-text').text('Upload Logo');
+            $('#upload-logo').removeClass('btn-danger').addClass('btn-secondary');
+            $('#logo-filename').text(''); 
+        }
+    }
+
+    initForm();
+
     fileInput.addEventListener('change', function () {
         const allowedExtensions = [
             '.jpg', 
@@ -23,24 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
             setLoading('error')
         }
 
-        let fileLogo =  $('#file_logo').val();
-        if(fileLogo) {
-            fileToDelete = $('#file_logo').val()
-            deleteLogoFromView();
-
-            $.ajax({
-                url: '/logo-delete/',
-                type: 'POST',
-                data: {
-                    'file_logo': fileToDelete,
-                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
-                },
-                error: function(xhr) {
-                    console.log("delete error")
-                }
-            });
-        }
-        
     });
 
     $('#upload-logo').click(function() {
@@ -50,8 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!fileLogo) {
             var formData = new FormData();
             formData.append('logo', logoFile);
+            formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val())
 
-            setLoading('start', 'upload')
+            setLoading('start')
 
             currentRequest = $.ajax({
                 url: '/logo-upload/',
@@ -62,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 success: function(response) {
                     $('#file_logo').val(response.file_logo);
                     setLoading('complete')
+                    initForm();
                 },
                 error: function(xhr) {
                     setLoading('error')
@@ -77,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 data: {
                     'file_logo': fileToDelete,
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success(response){
+                    initForm();
                 },
                 error: function(xhr) {
                     console.log("delete error")
@@ -104,8 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
             $('#upload-logo .spinner-border').addClass('d-none');
             $('#upload-logo').attr('disabled', false);
             currentRequest = null;
-            $('#upload-logo .button-text').text('Delete Logo');
-            $('#upload-logo').removeClass('btn-secondary').addClass('btn-danger');
         }
         else if (activater == 'error'){
             $('#upload-logo .spinner-border').addClass('d-none');

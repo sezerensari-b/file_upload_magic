@@ -12,7 +12,7 @@
         
         <div class="mb-3">
             <label for="name" class="form-label">Company Name</label>
-            <input type="text" id="name" name="name" class="form-control" required>
+            <input type="text" id="name" name="name" value="{{ company_temp.name|default_if_none:'' }}" class="form-control" required>
             {% if 'name' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.name.0 }}</div>
             {% endif %}
@@ -20,7 +20,7 @@
 
         <div class="mb-3">
             <label for="founded_date" class="form-label">Founded Date</label>
-            <input type="date" id="founded_date" name="founded_date" class="form-control" required>
+            <input type="date" id="founded_date" name="founded_date" value="{{ company_temp.founded_date|default_if_none:''|date:'Y-m-d' }}" class="form-control" required>
             {% if 'founded_date' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.founded_date.0 }}</div>
             {% endif %}
@@ -28,7 +28,7 @@
 
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="description" class="form-control" rows="4"></textarea>
+            <textarea id="description" name="description" class="form-control" rows="4">{{ company_temp.description|default_if_none:'' }}</textarea>
             {% if 'description' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.description.0 }}</div>
             {% endif %}
@@ -36,7 +36,7 @@
 
         <div class="mb-3">
             <label for="address" class="form-label">Address</label>
-            <input type="text" id="address" name="address" class="form-control" required>
+            <input type="text" id="address" name="address" value="{{ company_temp.address|default_if_none:'' }}" class="form-control" required>
             {% if 'address' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.address.0 }}</div>
             {% endif %}
@@ -44,7 +44,7 @@
 
         <div class="mb-3">
             <label for="phone_number" class="form-label">Phone Number</label>
-            <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+            <input type="text" id="phone_number" name="phone_number" value="{{ company_temp.phone_number|default_if_none:'' }}" class="form-control" required>
             {% if 'phone_number' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.phone_number.0 }}</div>
             {% endif %}
@@ -52,7 +52,7 @@
 
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" required>
+            <input type="email" id="email" name="email" value="{{ company_temp.email|default_if_none:'' }}" class="form-control" required>
             {% if 'email' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.email.0 }}</div>
             {% endif %}
@@ -60,14 +60,14 @@
 
         <div class="mb-3">
             <label for="website" class="form-label">Website</label>
-            <input type="url" id="website" name="website" class="form-control">
+            <input type="url" id="website" name="website" value="{{ company_temp.website|default_if_none:'' }}" class="form-control">
             {% if 'website' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.website.0 }}</div>
             {% endif %}
         </div>
 
         <div class="mb-3 form-check">
-            <input type="checkbox" id="active" name="active" class="form-check-input">
+            <input type="checkbox" id="active" name="active" {% if company_temp.active %}checked{% endif %} class="form-check-input">
             <label for="active" class="form-check-label">Active</label>
             {% if 'active' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.active.0 }}</div>
@@ -78,10 +78,10 @@
             <label for="sector" class="form-label">Sector</label>
             <select id="sector" name="sector" class="form-select" required>
                 <option value="">Select a sector</option>
-                <option value="tech">Technology</option>
-                <option value="finance">Finance</option>
-                <option value="health">Health</option>
-                <option value="education">Education</option>
+                <option value="tech" {% if company_temp.sector == "tech" %}selected{% endif %}>Technology</option>
+                <option value="finance" {% if company_temp.sector == "finance" %}selected{% endif %}>Finance</option>
+                <option value="health" {% if company_temp.sector == "health" %}selected{% endif %}>Health</option>
+                <option value="education" {% if company_temp.sector == "education" %}selected{% endif %}>Education</option>
             </select>
             {% if 'sector' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.sector.0 }}</div>
@@ -91,7 +91,8 @@
         <div class="mb-3">
             <label for="logo" class="form-label">Logo</label>
             <input type="file" id="logo" accept="image/*, video/*" name="logo" class="form-control" required>
-            <input type="hidden" id="file_logo" name="file_logo">
+            <input type="hidden" id="file_logo" name="file_logo" value="{{ company_temp.logo }}">
+            <span id="logo-filename" class="form-text"></span>
             {% if 'logo' in errors %}
             <div class="alert alert-danger mt-2 p-2">{{ errors.logo.0 }}</div>
             {% endif %}
@@ -101,7 +102,7 @@
             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
             <span class="button-text">Upload Logo</span>
         </button>
-        <button type="submit" disabled class="btn btn-primary">Save</button>
+        <button type="submit" disabled class="btn btn-info text-white">Save</button>
 
         <div id="upload-result"></div>
 
@@ -112,6 +113,7 @@
 {% block scripts%}
 {{ block.super }}
 <script src="{% static 'general/js/script.js' %}"></script> 
+<script src="{% static 'general/js/draft.js' %}"></script> 
 {% endblock %}
 
 
