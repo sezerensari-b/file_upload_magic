@@ -23,10 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             data: JSON.stringify(data),
             success: function(response) {
-                console.log('CompanyTemp updated successfully.');
             },
             error: function(xhr) {
-                console.error('Error updating CompanyTemp.');
             }
         });
     });
